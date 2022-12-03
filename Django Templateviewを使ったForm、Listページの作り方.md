@@ -36,5 +36,3 @@ Templateviewを使ったForm、Listページの作り方を理解することを
 # 参考文献
 [リンクテキスト](URL)
 
-
-e8dcbbc62da9990fc2483b5d787d302f65022982
