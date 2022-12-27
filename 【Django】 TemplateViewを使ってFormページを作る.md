@@ -449,6 +449,5 @@ TemplateViewでFormを作成するには　get_context_data か Mixinを使う
 - [Djangoのクラスベースビューを完全に理解する](https://www.membersedge.co.jp/blog/completely-guide-for-django-class-based-views/)
 - [みかん箱でプログラミング FormMixinクラス](https://en-junior.com/formview/#form-mixin)
 - [mixinの使い方](https://man.plustar.jp/django/ref/class-based-views/mixins-editing.html)
-- [SingleObjectMixin self.object = Noneにする必要がある](https://docs.djangoproject.com/en/4.1/ref/class-based-viewsmixins-single-object/#:~:text=object%3A%20The%20object%20that%20this%20view%20is%20displaying%20(self.object))
-
+- [django公式ドキュメント SingleObjectMixin self.object = Noneにする必要がある](https://docs.djangoproject.com/en/4.1/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data:~:text=requires%20that%20the-,self.object,-attribute%20be%20set)
 - [メモ〜djangoでのself.objectの注意点](https://qiita.com/keishi04hrikzira/items/3e07cffa247895f841a0)
