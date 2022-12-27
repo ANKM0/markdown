@@ -4,6 +4,9 @@ topics: ["GitHubActions", "Ruby", "YAML"]
 published: true
 ---
 
+Templateviewを使ってListページを作ろうとしたときに
+良い感じの記事と巡り会えず、思ったよりハマったのでTemplateviewを使ってListページを作る方法をまとめました
+
 # 概要
 TemplateViewを使ってListページを作成する方法です
 
