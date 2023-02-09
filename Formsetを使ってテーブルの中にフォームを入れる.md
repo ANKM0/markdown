@@ -1,5 +1,5 @@
 ---
-title: 【Django】 フォームをテーブルの中に入れる
+title: 【Django】 Formsetを使ってテーブルの中にフォームを入れる
 topics: ["GitHubActions", "Ruby", "YAML"]
 published: true
 ---
@@ -7,7 +7,6 @@ published: true
 # この記事で伝えたいこと
 
 - 画像のような画面の作り方
-
 ![Alt text](https://i.gyazo.com/e9182634b076b68ce734980a6c7b3f08.png)
 
 # 結論
@@ -173,7 +172,7 @@ from django.urls import path
 from . import views
 
 
-app/name = "app1"
+app_name = "app1"
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
 ]
@@ -246,13 +245,12 @@ templateに使うbase.htmlを作成します
 
 # 本題　フォームinテーブルの作り方
 
+下準備が終わったので
 フォームをテーブルの中に入れる方法を説明していきます
 
 ## 方法その1 フォーム画面とロジックを自作する
 
 Form画面とロジックのコードを書く方法です
-
-画面
 
 ```templates/app1/index.html
 {% extends "app1/base.html" %}
@@ -315,8 +313,6 @@ Form画面とロジックのコードを書く方法です
 </div>
 {% endblock %}
 ```
-
-ロジック
 
 ```app1/urls.py
 from django.views.generic import TemplateView
@@ -381,7 +377,6 @@ class IndexView(TemplateView):
 
 formで必要な処理
 入力画面を表示->バリデーション->DBに登録
-
 のうち、
 
 - 入力画面
@@ -394,7 +389,6 @@ formで必要な処理
 
 ## 方法その2 Formsetを使う
 
-画面
 ※Django-Boostを使っています
 
 ```templates/app1/base.html
@@ -464,8 +458,6 @@ formで必要な処理
 {% endblock %}
 ```
 
-ロジック
-
 ```app1/urls.py
 
 from django.views.generic import TemplateView
@@ -514,7 +506,7 @@ class IndexView(TemplateView):
 Formsetを使用することで、必要なコードを少なくできました
 
 しかし、getメソッドとpostメソッドで処理が重複しています
-そこで、get_context_dataメソッドを使い、更にきれいなコードにします
+そこで、get_context_dataメソッドを使い、更にきれいなコードにしていきます
 
 ## 方法3 Formset+get_context_dataメソッド
 
