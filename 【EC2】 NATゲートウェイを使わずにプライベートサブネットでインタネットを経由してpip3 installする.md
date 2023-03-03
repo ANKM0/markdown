@@ -1,5 +1,5 @@
 ---
-title: 【EC2】 NATゲートウェイを使わずにプライベートサブネットをインターネットに繋いでpip installする
+title: EC2】 NATゲートウェイを使わずにプライベートサブネットでインタネットを経由してpip3 installする
 topics: ["GitHubActions", "Ruby", "YAML"]
 published: true
 ---
