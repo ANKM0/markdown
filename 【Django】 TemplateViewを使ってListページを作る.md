@@ -8,10 +8,11 @@ Templateviewを使ってListページを作ろうとしたときに
 良い感じの記事と巡り会えず、思ったよりハマったのでTemplateviewを使ってListページを作る方法をまとめました
 
 # 概要
+
 TemplateViewを使ってListページを作成する方法です
 
-
 # この記事で伝えたいこと
+
 - Templateviewを使ったListページの作り方
 
 - context_dataにデータを詰めれば上手くいく
@@ -36,11 +37,13 @@ class IndexView(TemplateView):
 ```
 
 # ソースコード
-ソースコードをGitHubに公開しています <br>
-https://github.com/ANKM0/django_sample_make_list_with_templateview.git
 
+ソースコードをGitHubに公開しています
+
+<https://github.com/ANKM0/django_sample_make_list_with_templateview.git>
 
 # 環境
+
 - django4.1.3
 
 ## フォルダ構成
@@ -92,20 +95,14 @@ DJANGO_SAMPLE(root)
             index.html
 </pre>
 
-
-
-
-
-
-
-
-
 # 下準備
 
 ## リストで表示するためのデータを登録
+
 Listページの作り方を説明する前にリストで表示するためのデータを登録します
 
 number, name, priceカラムを持つTestDataモデルを作成します
+
 ```app1_models.py
 from django.db import models
 
@@ -128,7 +125,6 @@ class TestData(models.Model):
 
 ![Alt text](https://i.gyazo.com/022a7a00a68928454b94df6f9efa5c99.png)
 
-
 # 本題
 
 普段,リストを作成する場合はListViewを使っていると思います
@@ -144,26 +140,19 @@ class IndexView(ListView):
 
 ```
 
-<br>
-
 このとき,ListViewは
+
 1. モデルからデータを取得
 
-1. templateにデータをobject_listという名前で渡す
+2. templateにデータをobject_listという名前で渡す
 
 という処理を行っています
 
-<br>
-
 これらの処理をTemplateViewに追加していきます
-
-<br>
 
 ## 方法その1 get関数を使う
 
-ListViewと同じ処理をする方法その１はget関数をオーバーライドする方法です <br>
-
-<br>
+ListViewと同じ処理をする方法その１はget関数をオーバーライドする方法です
 
 コードで書くとこんな感じになります
 
@@ -187,12 +176,11 @@ class IndexView(TemplateView):
 
 ```
 
-<br>
-
-`object_list = TestData.objects.all()` でモデルからデータを取得しています<br>
+`object_list = TestData.objects.all()` でモデルからデータを取得しています
 
 contextにデータを渡して
-```
+
+```python
 context = {
     "object_list": object_list,
 }
@@ -200,9 +188,6 @@ return render(request, self.template_name, context)
 ```
 
 `return render(request, self.template_name, context)` でデータをテンプレートに渡しています
-
-
-<br>
 
 データを渡すテンプレートはこのようになります
 
@@ -227,7 +212,6 @@ return render(request, self.template_name, context)
 {% endblock %}
 ```
 
-
 サーバーではこのように表示されます
 
 ![Alt text](https://i.gyazo.com/3958bdc7b2a97e69724640993a6bdbce.png)
@@ -235,7 +219,6 @@ return render(request, self.template_name, context)
 <br>
 
 ## 方法その2 get_context_dataを使う
-
 
 get関数をオーバーライドする場合、処理を都度書く必要があるのでコードが汚く(冗長に)なりがちです
 
@@ -269,7 +252,6 @@ class IndexView(TemplateView):
 そこで簡潔に書くことのできる <br>
 get_context_data をオーバーライドする方法を使うことでコードが汚くなるのを防ぐことができます
 
-
 ```app1_views.py
 from django.views.generic import TemplateView
 
@@ -285,7 +267,6 @@ class IndexView(TemplateView):
         return ctx
 ```
 
-
 `ctx = super().get_context_data(**kwargs)` でget_context_dataを継承してget_context_dataの中身をctxに代入しています<br>
 
 <br>
@@ -298,14 +279,12 @@ get_context_dataの中身は辞書形式なので `ctx['object_list'] = TestData
 
 ![Alt text](https://i.gyazo.com/3958bdc7b2a97e69724640993a6bdbce.png)
 
-
-
-
 # まとめ
+
 TemplateViewでリストを作成するにはcontext_dataにデータを代入する
 
-
 # 参考文献
+
 - [ListViewの使い方と出来ること](https://qiita.com/aqmr-kino/items/d536e08a715a9fad5720)
 - [Django でまず覚えたい TemplateView のパターン](https://qiita.com/ytyng/items/7cb3c3a5605974151678)
 - [Djangoにおけるクラスベース汎用ビューの入門と使い方サンプル](https://qiita.com/dai-takahashi/items/7d0187485cad4418c073)

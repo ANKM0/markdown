@@ -9,10 +9,11 @@ Templateviewを使ってFormページを作ろうとしたときに
 思ったよりハマったのでTemplateviewを使ってListページを作る方法をまとめました
 
 # 概要
+
 TemplateViewを使ってFromページを作成する方法です
 
-
 # この記事で伝えたいこと
+
 - Templateviewを使ったFormページの作り方
 
 # 結論
@@ -49,11 +50,13 @@ class IndexView(TemplateView, ModelFormMixin):
 ```
 
 # ソースコード
-ソースコードをGitHubに公開しています <br>
-https://github.com/ANKM0/django_sample_make_form_with_templateview.git
 
+ソースコードをGitHubに公開しています
+
+<https://github.com/ANKM0/django_sample_make_form_with_templateview.git>
 
 # 環境
+
 - django4.1.3
 
 ## フォルダ構成
@@ -105,10 +108,10 @@ DJANGO_SAMPLE(root)
             index.html
 </pre>
 
-
 # 下準備
 
 ## models,formsの作成
+
 Formを作成する際に使うmodelsとFormsを作成しました
 
 ```app1_models.py
@@ -127,7 +130,6 @@ class TestData(models.Model):
         verbose_name_plural = "テストデータ"
 ```
 
-
 ```app1_forms.py
 from django import forms
 from .models import TestData
@@ -139,7 +141,6 @@ class TestDataModelForm(forms.ModelForm):
         model = TestData
         fields = ("number", "name", "price")
 ```
-
 
 # Formに必要な処理
 
@@ -153,13 +154,12 @@ Formに必要でTemplateViewにない機能は
 これらの処理を追加することで　<br>
 FormをTemplateViewで使えるようになります
 
-
 Formに必要な処理をTemplateViewに追加する方法を説明していきます
+
 ## 方法その1 From画面とロジックを自作する方法
 
 ないなら作ればいいということで <br>
 From画面とロジックを自作する方法です
-
 
 ```index.html
 {% extends "app1/base.html" %}
@@ -200,8 +200,8 @@ From画面とロジックを自作する方法です
 
 inputタグでFormを作成して、min,maxlengthで入力出来る値を制限しています
 
-
 ロジックはこんな感じで作成します
+
 ```app1_views.py
 from django.views.generic import TemplateView, ListView
 from django.http import HttpResponse
@@ -240,13 +240,11 @@ class IndexView(TemplateView):
 
 ```
 
-
 `request.POST.get("[inputタグのname]")` でフォームに入力された値を取得して
 
 `self.form_class(default_data)`　でバリデーション(値の検証)を実行して
 
 `form.save()` でデータを保存しています
-
 
 ## 方法その2 djangoのformを使う
 
@@ -276,8 +274,6 @@ class IndexView(TemplateView):
 この書き方だとコードが汚く(冗長に)なるので
 
 djangoが用意しているformを使います
-
-
 
 ```app1_views.py
 from django.views.generic import TemplateView, ListView
@@ -313,8 +309,8 @@ class IndexView(TemplateView):
 
 contextは辞書型にする必要があるので注意です
 
-
 templateはこのようになります
+
 ```index.html
 {% extends "app1/base.html" %}
 {% block title %}index{% endblock %}
@@ -335,7 +331,6 @@ templateはこのようになります
 {% endblock %}
 ```
 
-
 ## 方法その3 get_context_dataを使う
 
 方法2では getとpostにそれぞれ処理を書いていましたが
@@ -343,6 +338,7 @@ templateはこのようになります
 getはデータの受け渡ししかしていないので 副作用を避けるために使わない方が良いです
 
 そこでgetメソッドをget_context_dataメソッドに置き換えます
+
 ```app1_views.py
 from django.views.generic import TemplateView, ListView
 from django.http import HttpResponse
@@ -368,11 +364,9 @@ class IndexView(TemplateView):
             return redirect("app1:index")
 ```
 
-
 `ctx = super().get_context_data(**kwargs)` でget_context_dataを継承してget_context_dataの中身をctxに代入
 
 get_context_dataの中身は辞書形式なので `ctx["form"] = self.form_class()` でデータを渡しています
-
 
 ## 方法その4 ModelFormMixinを使う
 
@@ -428,23 +422,19 @@ Formに使うmodel
 
 をそれぞれ指定します
 
-
 また、`self.object = None`をget/postで指定する必要があります
 
 これは`ModelFormMixin`の親の`SingleObjectMixin`が`self.object`を持っているため <br>
 `self.object`を使わないView(TemplateView)でも定義する必要があるからです
 
-
 使わないときは`self.object = None`にする必要があります
 
-
-
-
 # まとめ
+
 TemplateViewでFormを作成するには　get_context_data か Mixinを使う
 
-
 # 参考文献
+
 - [Djangoの 汎用クラスビューをまとめて、実装について言及する](https://qiita.com/renjikari/items/af3e8958d2653e6f8d46)
 - [Djangoのクラスベースビューを完全に理解する](https://www.membersedge.co.jp/blog/completely-guide-for-django-class-based-views/)
 - [みかん箱でプログラミング FormMixinクラス](https://en-junior.com/formview/#form-mixin)
