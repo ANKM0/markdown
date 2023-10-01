@@ -15,7 +15,6 @@ aa@gmail.com
 gllilwe9d9f16
 -->
 
-
 ## 作業工程
 
 1. djangoのデモを動くように
