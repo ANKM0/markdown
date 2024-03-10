@@ -77,6 +77,3 @@ admin.AdminSite.get_app_list = get_app_list
 
 - <https://stackoverflow.com/questions/398163/ordering-admin-modeladmin-objects-in-django-admin>
 - <https://stackoverflow.com/questions/398163/ordering-admin-modeladmin-objects-in-django-admin>
-
-
-
