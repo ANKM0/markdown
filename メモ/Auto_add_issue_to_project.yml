@@ -1,0 +1,76 @@
+name: Auto add issue to project
+on:
+  issues:
+    types: [opened, reopened]
+jobs:
+  # projectにissueを登録する
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      # projectにissueを登録する
+      - uses: actions/add-to-project@v0.4.0
+        with:
+          project-url: https://github.com/users/ANKM0/projects/1
+          github-token: ${{ secrets.TOKEN }}
+      # issueの情報を取得
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Get issue number
+        run: |
+          echo "Issue number: ${{ github.event.issue.number }}"
+          echo "Issue node_id: ${{ github.event.issue.node_id }}"
+        env:
+          ISSUE_Number: ${{ github.event.issue.number }}
+      # 子issueのidから親issueのissue_nuberを取得する
+      - name: get parent issue number
+        id: step_one
+        run: |
+          echo "parent_issue_number=$(gh api graphql --paginate -f query='
+            query {
+              node(id: "${{ github.event.issue.node_id }}") {
+                ... on Issue {
+                  trackedInIssues(first: 5) {
+                    nodes {
+                      number
+                    }
+                  }
+                }
+              }
+            }
+          '| jq .data.node.trackedInIssues.nodes[].number)" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
+      # Isuueが親ラベルを持っているかによってラベル名を設定
+      # Isuueが親ラベル有りのとき->ラベル名を[親のIssue番号]に設定
+      # Isuueが親ラベル無しのとき->ラベル名を親の[Issue番号_child]に設定
+      - name: set label name by issue
+        id: step_two
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          parent_issue_number="${{ steps.step_one.outputs.parent_issue_number }}"
+          echo $parent_issue_number
+          # 空の場合
+          if [ -z "$parent_issue_number" ]; then
+              label="$NUMBER"
+          else
+              label="${parent_issue_number}_child"
+          fi
+          echo "label=$label" >> $GITHUB_OUTPUT
+      # ラベルを作成する
+      - name: make new lable
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
+          LABEL: ${{ steps.step_two.outputs.label }}
+        run: |
+          gh label create "$LABEL" --color "#bfdadc" --repo ${{ github.repository }} --force
+      # issuenにラベルを追加する
+      - name: set lable
+        run: gh issue edit "$NUMBER" --add-label "$LABEL"
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          LABEL: ${{ steps.step_two.outputs.label }}
